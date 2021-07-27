@@ -24,6 +24,7 @@ def get_album(album_id):
 def shrink_album(album):
     album_dict = json.loads(album.json())
     shrunk_album = {
+        'id': album_dict['id'],
         'images': album_dict['images'],
         'uri': album_dict['uri'],
         'name': album_dict['name'],

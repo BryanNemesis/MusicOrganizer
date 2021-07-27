@@ -1,3 +1,4 @@
-- add_album_to_collection should not allow duplicate albums
-- delete endpoints missing
-- maybe use shrink albums for albums list from search as well
+API:
+- how can i set a mock database
+- maybe use shrink albums for albums list from search as well... meh, im not saving these results so whatever.
+- list of user's saved albums - this one's for later.

@@ -1,5 +1,3 @@
-import json
-
 import boto3
 from boto3.dynamodb.conditions import Key
 
@@ -24,11 +22,37 @@ def get_collection_detail(user_id: str, collection_title: str):
 
 
 def create_collection(user_id: str, collection):
+    collection.update({'albums': []})
     response = collections.put_item(Item=collection)
     return response
 
 
+def delete_collection(user_id: str, collection_title):
+    response = collections.delete_item(
+        Key={
+            'user_id': user_id,
+            'title': collection_title
+            }
+        )
+    return response
+
+
 def add_album_to_collection(user_id: str, collection_title, album):
+    try:
+        album_ids_in_collection = [
+            x['id'] for x in collections.get_item(
+                Key={
+                    'user_id': user_id,
+                    'title': collection_title}
+                )['Item']['albums']
+            ]
+        album_in_collection = album['id'] in album_ids_in_collection
+    except KeyError:
+        album_in_collection = False
+
+    if album_in_collection:
+        return {'message': 'Album already in collection'}
+
     response = collections.update_item(
         Key={
             'user_id': user_id,
@@ -42,6 +66,8 @@ def add_album_to_collection(user_id: str, collection_title, album):
         )
     return response
 
+
+################################
 
 def create_collections_table():
     table = db.create_table(
