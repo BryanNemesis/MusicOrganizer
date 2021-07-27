@@ -1,0 +1,3 @@
+- add_album_to_collection should not allow duplicate albums
+- delete endpoints missing
+- maybe use shrink albums for albums list from search as well
