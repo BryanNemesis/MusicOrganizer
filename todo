@@ -1,4 +1,4 @@
 API:
-- how can i set a mock database
+- add Album type for type checking
 - maybe use shrink albums for albums list from search as well... meh, im not saving these results so whatever.
 - list of user's saved albums - this one's for later.

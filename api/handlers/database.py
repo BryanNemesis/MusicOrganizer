@@ -2,6 +2,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 
+
 db = boto3.resource('dynamodb', endpoint_url="http://db-local:8000", region_name="eu-west-1")
 collections = db.Table(name='collections')
         
@@ -37,7 +38,7 @@ def delete_collection(user_id: str, collection_title):
     return response
 
 
-def add_album_to_collection(user_id: str, collection_title, album):
+def add_album_to_collection(user_id: str, collection_title: str, album):
     try:
         album_ids_in_collection = [
             x['id'] for x in collections.get_item(
@@ -66,6 +67,21 @@ def add_album_to_collection(user_id: str, collection_title, album):
         )
     return response
 
+
+def delete_album_from_collection(user_id: str, collection_title: str, album_id: str):
+    collection_albums = collections.get_item(Key={'user_id': user_id, 'title': collection_title})['Item']['albums']
+    album_index = [i for i, item in enumerate(collection_albums) if item['id'] == album_id][0]
+    
+    response = collections.update_item(
+        Key={
+            'user_id': user_id,
+            'title': collection_title
+            },
+        UpdateExpression=f'REMOVE albums[{album_index}]',
+        ReturnValues="UPDATED_NEW"
+    )   
+
+    return response
 
 ################################
 

@@ -22,9 +22,18 @@ services:
     links:
       - db-local
     ports:
-     - "8080:8080"
      - "5000:5000"
     environment:
       AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
       AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
       REGION: 'eu-west-1'
+  web:
+    build:
+      context: ./web
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    env_file:
+      - ./web/.env
+    ports:
+      - "3000:3000"

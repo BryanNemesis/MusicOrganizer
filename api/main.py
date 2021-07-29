@@ -1,6 +1,6 @@
 from os import environ
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from handlers import database, spotify
@@ -33,13 +33,23 @@ def collection_delete(collection_title: str):
 
 @app.get("/collections/{collection_title}")
 def collection_detail(collection_title: str):
-    return database.get_collection_detail(user_id, collection_title)
+    response = database.get_collection_detail(user_id, collection_title)
+    try:
+        response['Item']
+        return response
+    except KeyError:
+        return HTTPException(404, f'Collection with title {collection_title} not found.')
 
 
 @app.post("/collections/{collection_title}")
 def collection_add_album(collection_title: str, album_id: str):
     album = spotify.get_album(album_id)
     return database.add_album_to_collection(user_id, collection_title, album)
+
+
+@app.delete("/collections/{collection_title}/{album_id}")
+def collection_delete_album(collection_title: str, album_id: str):
+    return database.delete_album_from_collection(user_id, collection_title, album_id)
 
 
 @app.get("/albums/{query}")
